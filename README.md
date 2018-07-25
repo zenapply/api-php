@@ -7,7 +7,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/zenapply/api-php.svg?style=flat-square)](https://packagist.org/packages/zenapply/api-php)
 
 ## Resources
-[https://zenapply.docs.apiary.io/](API v2 Documentation)
+[API v2 Documentation](https://zenapply.docs.apiary.io/)
 
 ## Installation
 
