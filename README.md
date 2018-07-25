@@ -1,4 +1,4 @@
-# Define Licenses and Limitations
+# Zenapply API v2
 [![Latest Version](https://img.shields.io/github/release/zenapply/api-php.svg?style=flat-square)](https://github.com/zenapply/api-php/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://travis-ci.org/zenapply/api-php.svg?branch=master)](https://travis-ci.org/zenapply/api-php)
