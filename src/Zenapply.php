@@ -2,7 +2,11 @@
 
 namespace Zenapply\Api;
 
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Psr7\Response;
+use Zenapply\Api\Exceptions\ZenapplyException;
 
 class Zenapply
 {
@@ -20,7 +24,9 @@ class Zenapply
             "base_uri" => $this->base_uri,
             "timeout" => 30,
             "headers" => [
+                'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->api_key,
+                'X-Requested-With' => 'XMLHttpRequest',
             ]
         ]);
     }
@@ -35,19 +41,19 @@ class Zenapply
     public function get($id)
     {
         $uri = "{$this->resource}/{$id}";
-        return $this->client->request('GET', $uri);
+        return $this->request('GET', $uri);
     }
 
     public function all()
     {
         $uri = $this->resource;
-        return $this->client->request('GET', $uri);
+        return $this->request('GET', $uri);
     }
 
     public function post(array $data = null)
     {
         $uri = $this->resource;
-        return $this->client->request('POST', $uri, [
+        return $this->request('POST', $uri, [
             "json" => $data
         ]);
     }
@@ -55,7 +61,7 @@ class Zenapply
     public function put($id, array $data = null)
     {
         $uri = "{$this->resource}/{$id}";
-        return $this->client->request('PUT', $uri, [
+        return $this->request('PUT', $uri, [
             "json" => $data
         ]);
     }
@@ -63,8 +69,36 @@ class Zenapply
     public function delete($id, array $data = null)
     {
         $uri = "{$this->resource}/{$id}";
-        return $this->client->request('DELETE', $uri, [
+        return $this->request('DELETE', $uri, [
             "json" => $data
         ]);
+    }
+
+    protected function request($method, $uri, $options = [])
+    {
+        try {
+            return $this->transform($this->client->request($method, $uri, $options));
+        } catch (BadResponseException $e) {
+            return $this->handleBadResponseException($e);
+        }
+    }
+
+    protected function transform(Response $response)
+    {
+        return json_decode($response->getBody());
+    }
+
+    protected function handleBadResponseException($e)
+    {
+        try {
+            $r = $this->transform($e->getResponse());
+            $message = @$r->error->message;
+            $code = @$r->error->code;
+        } catch (Exception $x) {
+            $message = "An error occurred";
+            $code = 500;
+        }
+        
+        throw new ZenapplyException($message, $code, $e);
     }
 }
