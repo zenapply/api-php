@@ -7,16 +7,17 @@ use GuzzleHttp\Client;
 class Zenapply
 {
     protected $api_key;
-    protected $host;
+    protected $base_uri;
     protected $client;
     protected $resource;
 
-    public function __construct($api_key, $domain = "api")
+    public function __construct($api_key, $host = "api.zenapply.com", $secure = true)
     {
+        $protocol = $secure ? "https" : "http";
         $this->api_key = $api_key;
-        $this->host = "https://{$domain}.zennapply.com/api/v2/";
+        $this->base_uri = "{$protocol}://{$host}/api/v2/";
         $this->client = new Client([
-            "base_uri" => $this->host,
+            "base_uri" => $this->base_uri,
             "timeout" => 30,
             "headers" => [
                 'Authorization' => 'Bearer ' . $this->api_key,
