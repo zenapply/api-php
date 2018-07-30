@@ -44,10 +44,12 @@ class Zenapply
         return $this->request('GET', $uri);
     }
 
-    public function all()
+    public function all(array $search = null)
     {
         $uri = $this->resource;
-        return $this->request('GET', $uri);
+        return $this->request('GET', $uri, [
+            'query' => $search
+        ]);
     }
 
     public function post(array $data = null)
